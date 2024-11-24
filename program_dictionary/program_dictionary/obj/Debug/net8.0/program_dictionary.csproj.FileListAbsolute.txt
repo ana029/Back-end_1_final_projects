@@ -1,0 +1,15 @@
+C:\Users\user\source\repos\program_dictionary\program_dictionary\bin\Debug\net8.0\program_dictionary.exe
+C:\Users\user\source\repos\program_dictionary\program_dictionary\bin\Debug\net8.0\program_dictionary.deps.json
+C:\Users\user\source\repos\program_dictionary\program_dictionary\bin\Debug\net8.0\program_dictionary.runtimeconfig.json
+C:\Users\user\source\repos\program_dictionary\program_dictionary\bin\Debug\net8.0\program_dictionary.dll
+C:\Users\user\source\repos\program_dictionary\program_dictionary\bin\Debug\net8.0\program_dictionary.pdb
+C:\Users\user\source\repos\program_dictionary\program_dictionary\obj\Debug\net8.0\program_dictionary.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\source\repos\program_dictionary\program_dictionary\obj\Debug\net8.0\program_dictionary.AssemblyInfoInputs.cache
+C:\Users\user\source\repos\program_dictionary\program_dictionary\obj\Debug\net8.0\program_dictionary.AssemblyInfo.cs
+C:\Users\user\source\repos\program_dictionary\program_dictionary\obj\Debug\net8.0\program_dictionary.csproj.CoreCompileInputs.cache
+C:\Users\user\source\repos\program_dictionary\program_dictionary\obj\Debug\net8.0\program_dictionary.sourcelink.json
+C:\Users\user\source\repos\program_dictionary\program_dictionary\obj\Debug\net8.0\program_dictionary.dll
+C:\Users\user\source\repos\program_dictionary\program_dictionary\obj\Debug\net8.0\refint\program_dictionary.dll
+C:\Users\user\source\repos\program_dictionary\program_dictionary\obj\Debug\net8.0\program_dictionary.pdb
+C:\Users\user\source\repos\program_dictionary\program_dictionary\obj\Debug\net8.0\program_dictionary.genruntimeconfig.cache
+C:\Users\user\source\repos\program_dictionary\program_dictionary\obj\Debug\net8.0\ref\program_dictionary.dll
