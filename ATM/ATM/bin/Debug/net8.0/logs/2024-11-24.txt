@@ -1,0 +1,4 @@
+24-Nov-24 17:26:03: User nino withdrew 1000 units. Remaining balance: 0
+24-Nov-24 17:26:19: User nino deposited 1200 units. New balance: 1200
+24-Nov-24 17:26:26: User nino withdrew 250 units. Remaining balance: 950
+24-Nov-24 17:26:46: User giorgi registered with initial balance of 750 units.

@@ -1,0 +1,148 @@
+using System;
+using System.IO;
+
+namespace ATM
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string filePath = "account.txt";
+            string pinCode = "1234"; // Set a predefined pin code for user authentication
+
+            // Initialize user data
+            if (!File.Exists(filePath))
+            {
+                File.WriteAllText(filePath, "1000"); // Initial balance of 1000 units
+            }
+
+            bool running = true;
+            while (running)
+            {
+                Console.WriteLine("\n--- ATM ---");
+
+                // Request pin code for authentication
+                Console.Write("Please enter your PIN: ");
+                string enteredPin = Console.ReadLine();
+
+                // Check if entered PIN matches the predefined one
+                if (enteredPin != pinCode)
+                {
+                    Console.WriteLine("Incorrect PIN. Please try again.");
+                    continue; // Skip the rest of the loop if the PIN is incorrect
+                }
+
+                Console.WriteLine("1. Check Balance");
+                Console.WriteLine("2. Deposit Money");
+                Console.WriteLine("3. Withdraw Money");
+                Console.WriteLine("4. Change PIN");
+                Console.WriteLine("5. Exit");
+                Console.Write("Select an operation: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        CheckBalance(filePath);
+                        break;
+                    case "2":
+                        Deposit(filePath);
+                        break;
+                    case "3":
+                        Withdraw(filePath);
+                        break;
+                    case "4":
+                        ChangePin(ref pinCode);  // Call the ChangePin function
+                        break;
+                    case "5":
+                        running = false;
+                        Console.WriteLine("Thank you for using the ATM!");
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice, please try again.");
+                        break;
+                }
+            }
+        }
+
+        static void CheckBalance(string filePath)
+        {
+            decimal balance = GetBalance(filePath);
+            Console.WriteLine($"Your current balance: {balance} units.");
+        }
+
+        static void Deposit(string filePath)
+        {
+            Console.Write("Enter the amount to deposit: ");
+            if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
+            {
+                decimal balance = GetBalance(filePath);
+                balance += amount;
+                File.WriteAllText(filePath, balance.ToString());
+                Console.WriteLine($"You successfully deposited {amount} units. New balance: {balance}");
+            }
+            else
+            {
+                Console.WriteLine("Invalid amount. Please try again.");
+            }
+        }
+
+        static void Withdraw(string filePath)
+        {
+            Console.Write("Enter the amount to withdraw: ");
+            if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
+            {
+                decimal balance = GetBalance(filePath);
+                if (amount <= balance)
+                {
+                    balance -= amount;
+                    File.WriteAllText(filePath, balance.ToString());
+                    Console.WriteLine($"You successfully withdrew {amount} units. Remaining balance: {balance}");
+                }
+                else
+                {
+                    Console.WriteLine("Insufficient balance for withdrawal.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid amount. Please try again.");
+            }
+        }
+
+        static decimal GetBalance(string filePath)
+        {
+            string content = File.ReadAllText(filePath);
+            return decimal.TryParse(content, out decimal balance) ? balance : 0;
+        }
+
+        // Function to change the PIN
+        static void ChangePin(ref string pinCode)
+        {
+            Console.Write("Enter your current PIN: ");
+            string currentPin = Console.ReadLine();
+
+            if (currentPin == pinCode)
+            {
+                Console.Write("Enter your new PIN: ");
+                string newPin = Console.ReadLine();
+                Console.Write("Confirm your new PIN: ");
+                string confirmPin = Console.ReadLine();
+
+                if (newPin == confirmPin)
+                {
+                    pinCode = newPin;
+                    Console.WriteLine("PIN successfully changed.");
+                }
+                else
+                {
+                    Console.WriteLine("PINs do not match. Try again.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Incorrect current PIN. PIN change failed.");
+            }
+        }
+    }
+}
