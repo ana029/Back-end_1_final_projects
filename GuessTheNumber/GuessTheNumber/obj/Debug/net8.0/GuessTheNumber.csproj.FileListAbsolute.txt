@@ -1,0 +1,15 @@
+C:\Users\user\source\repos\GuessTheNumber\GuessTheNumber\bin\Debug\net8.0\GuessTheNumber.exe
+C:\Users\user\source\repos\GuessTheNumber\GuessTheNumber\bin\Debug\net8.0\GuessTheNumber.deps.json
+C:\Users\user\source\repos\GuessTheNumber\GuessTheNumber\bin\Debug\net8.0\GuessTheNumber.runtimeconfig.json
+C:\Users\user\source\repos\GuessTheNumber\GuessTheNumber\bin\Debug\net8.0\GuessTheNumber.dll
+C:\Users\user\source\repos\GuessTheNumber\GuessTheNumber\bin\Debug\net8.0\GuessTheNumber.pdb
+C:\Users\user\source\repos\GuessTheNumber\GuessTheNumber\obj\Debug\net8.0\GuessTheNumber.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\source\repos\GuessTheNumber\GuessTheNumber\obj\Debug\net8.0\GuessTheNumber.AssemblyInfoInputs.cache
+C:\Users\user\source\repos\GuessTheNumber\GuessTheNumber\obj\Debug\net8.0\GuessTheNumber.AssemblyInfo.cs
+C:\Users\user\source\repos\GuessTheNumber\GuessTheNumber\obj\Debug\net8.0\GuessTheNumber.csproj.CoreCompileInputs.cache
+C:\Users\user\source\repos\GuessTheNumber\GuessTheNumber\obj\Debug\net8.0\GuessTheNumber.sourcelink.json
+C:\Users\user\source\repos\GuessTheNumber\GuessTheNumber\obj\Debug\net8.0\GuessTheNumber.dll
+C:\Users\user\source\repos\GuessTheNumber\GuessTheNumber\obj\Debug\net8.0\refint\GuessTheNumber.dll
+C:\Users\user\source\repos\GuessTheNumber\GuessTheNumber\obj\Debug\net8.0\GuessTheNumber.pdb
+C:\Users\user\source\repos\GuessTheNumber\GuessTheNumber\obj\Debug\net8.0\GuessTheNumber.genruntimeconfig.cache
+C:\Users\user\source\repos\GuessTheNumber\GuessTheNumber\obj\Debug\net8.0\ref\GuessTheNumber.dll
