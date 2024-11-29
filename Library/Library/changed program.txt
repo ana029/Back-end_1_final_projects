@@ -1,0 +1,316 @@
+using Library.BookManagerApp;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+namespace Library
+{
+    namespace BookManagerApp
+    {
+        // Book და BookManager კლასი უცვლელი რჩება
+        public class Book
+        {
+            public int ID { get; set; } // Unique ID
+            public string Title { get; set; }
+            public string Author { get; set; }
+            public int PublicationYear { get; set; }
+
+            public Book(int id, string title, string author, int publicationYear)
+            {
+                ID = id;
+                Title = title;
+                Author = author;
+                PublicationYear = publicationYear;
+            }
+
+            public override string ToString()
+            {
+                return $"ID: {ID}, Title: {Title}, Author: {Author}, Year: {PublicationYear}";
+            }
+        }
+
+        public class BookManager
+        {
+            private const string FilePath = "books.txt";
+            private readonly object fileLock = new object();
+            private List<Book> books;
+
+            public BookManager()
+            {
+                books = LoadBooksFromFile();
+            }
+
+            private List<Book> LoadBooksFromFile()
+            {
+                var bookList = new List<Book>();
+                if (!File.Exists(FilePath))
+                {
+                    File.Create(FilePath).Close();
+                }
+                else
+                {
+                    var lines = File.ReadAllLines(FilePath);
+                    foreach (var line in lines)
+                    {
+                        var parts = line.Split('|');
+                        if (parts.Length == 4 &&
+                            int.TryParse(parts[0], out int id) &&
+                            int.TryParse(parts[3], out int publicationYear))
+                        {
+                            bookList.Add(new Book(id, parts[1], parts[2], publicationYear));
+                        }
+                    }
+                }
+                return bookList;
+            }
+
+            private void SaveBooksToFile()
+            {
+                lock (fileLock)
+                {
+                    var lines = books.Select(book => $"{book.ID}|{book.Title}|{book.Author}|{book.PublicationYear}");
+                    File.WriteAllLines(FilePath, lines);
+                }
+            }
+
+            private int GenerateUniqueID()
+            {
+                var usedIDs = books.Select(b => b.ID).ToHashSet();
+                int id = 1;
+                while (usedIDs.Contains(id))
+                {
+                    id++;
+                }
+                return id;
+            }
+
+            public void AddBook(Book book)
+            {
+                book.ID = GenerateUniqueID();
+                books.Add(book);
+                SaveBooksToFile();
+            }
+
+            public List<Book> GetAllBooks()
+            {
+                return new List<Book>(books);
+            }
+
+            public Book SearchBookByTitle(string title)
+            {
+                return books.FirstOrDefault(b => b.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
+            }
+        }
+
+        // User კლასი უცვლელი რჩება
+        public class User
+        {
+            public string Name { get; protected set; }
+            public string Email { get; protected set; }
+            public int Age { get; protected set; }
+
+            public virtual void ViewAllBooks(BookManager bookManager)
+            {
+                var books = bookManager.GetAllBooks();
+                if (books.Count == 0)
+                {
+                    Console.WriteLine("No books available.");
+                }
+                else
+                {
+                    Console.WriteLine("\n--- All Books ---");
+                    foreach (var book in books)
+                    {
+                        Console.WriteLine(book);
+                    }
+                }
+            }
+
+            public virtual Book SearchBook(BookManager bookManager, string title)
+            {
+                var book = bookManager.SearchBookByTitle(title);
+                if (book != null)
+                {
+                    Console.WriteLine("Book found: " + book);
+                }
+                else
+                {
+                    Console.WriteLine("Book not found.");
+                }
+                return book;
+            }
+        }
+
+        public class RegisteredUser : User
+        {
+            private string password;
+            private List<Book> cart;
+
+            public RegisteredUser(string name, string email, int age, string password)
+            {
+                Name = name;
+                Email = email;
+                Age = age;
+                this.password = password;
+                cart = new List<Book>();
+            }
+
+            public void AddToCart(Book book)
+            {
+                cart.Add(book);
+                Console.WriteLine($"Book \"{book.Title}\" added to your cart.");
+            }
+
+            public void ViewCart()
+            {
+                if (cart.Count == 0)
+                {
+                    Console.WriteLine("Your cart is empty.");
+                }
+                else
+                {
+                    Console.WriteLine("\n--- Your Cart ---");
+                    foreach (var book in cart)
+                    {
+                        Console.WriteLine(book);
+                    }
+                }
+            }
+
+            public void SaveUserData()
+            {
+                string fileName = $"{Name}_data.txt";
+                var lines = new List<string>
+                {
+                    Name,
+                    Email,
+                    Age.ToString(),
+                    password
+                };
+                lines.AddRange(cart.Select(book => $"{book.ID}|{book.Title}|{book.Author}|{book.PublicationYear}"));
+                File.WriteAllLines(fileName, lines);
+            }
+
+            public static RegisteredUser Login(string name, string password)
+            {
+                string fileName = $"{name}_data.txt";
+                if (File.Exists(fileName))
+                {
+                    var lines = File.ReadAllLines(fileName);
+                    if (lines.Length >= 4 && lines[3] == password)
+                    {
+                        return new RegisteredUser(lines[0], lines[1], int.Parse(lines[2]), lines[3]);
+                    }
+                }
+                return null;
+            }
+        }
+
+        public class GuestUser : User
+        {
+            public static void RegisterNewUser()
+            {
+                Console.Write("Enter your name: ");
+                string name = Console.ReadLine();
+                Console.Write("Enter your email: ");
+                string email = Console.ReadLine();
+                Console.Write("Enter your age: ");
+                if (!int.TryParse(Console.ReadLine(), out int age))
+                {
+                    Console.WriteLine("Invalid age entered. Registration failed.");
+                    return;
+                }
+                Console.Write("Enter your password: ");
+                string password = Console.ReadLine();
+
+                var newUser = new RegisteredUser(name, email, age, password);
+                newUser.SaveUserData();
+                Console.WriteLine("Registration successful!");
+            }
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            BookManager bookManager = new BookManager();
+
+            Console.WriteLine("Are you a (1) Registered User or (2) Guest?");
+            string role = Console.ReadLine();
+
+            if (role == "1")
+            {
+                Console.Write("Enter your name: ");
+                string name = Console.ReadLine();
+                Console.Write("Enter your password: ");
+                string password = Console.ReadLine();
+
+                var user = RegisteredUser.Login(name, password);
+                if (user != null)
+                {
+                    Console.WriteLine($"Welcome back, {user.Name}!");
+                    RunUserMenu(user, bookManager);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid credentials.");
+                }
+            }
+            else if (role == "2")
+            {
+                GuestUser.RegisterNewUser();
+            }
+        }
+
+        static void RunUserMenu(User user, BookManager bookManager)
+        {
+            while (true)
+            {
+                Console.WriteLine("\n1. View all books");
+                Console.WriteLine("2. Search for a book");
+                if (user is RegisteredUser registeredUser)
+                {
+                    Console.WriteLine("3. Add book to cart");
+                    Console.WriteLine("4. View cart");
+                }
+                Console.WriteLine("5. Exit");
+
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        user.ViewAllBooks(bookManager);
+                        break;
+                    case "2":
+                        Console.Write("Enter the book title: ");
+                        string title = Console.ReadLine();
+                        user.SearchBook(bookManager, title);
+                        break;
+                    case "3":
+                        if (user is RegisteredUser registered)
+                        {
+                            Console.Write("Enter the book title: ");
+                            string bookTitle = Console.ReadLine();
+                            var book = user.SearchBook(bookManager, bookTitle);
+                            if (book != null)
+                            {
+                                registered.AddToCart(book);
+                            }
+                        }
+                        break;
+                    case "4":
+                        if (user is RegisteredUser regUser)
+                        {
+                            regUser.ViewCart();
+                        }
+                        break;
+                    case "5":
+                        return;
+                }
+            }
+        }
+    }
+}

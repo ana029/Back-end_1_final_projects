@@ -1,0 +1,50 @@
+1|1984|George Orwell|1949
+2|The Great Gatsby|F. Scott Fitzgerald|1925
+3|To Kill a Mockingbird|Harper Lee|1960
+4|Pride and Prejudice|Jane Austen|1813
+5|The Catcher in the Rye|J.D. Salinger|1951
+6|The Lord of the Rings|J.R.R. Tolkien|1954
+7|Moby-Dick|Herman Melville|1851
+8|War and Peace|Leo Tolstoy|1869
+9|Crime and Punishment|Fyodor Dostoevsky|1866
+11|Brave New World|Aldous Huxley|1932
+12|Wuthering Heights|Emily Brontë|1847
+13|Jane Eyre|Charlotte Brontë|1847
+14|The Brothers Karamazov|Fyodor Dostoevsky|1880
+15|Great Expectations|Charles Dickens|1861
+16|The Scarlet Letter|Nathaniel Hawthorne|1850
+17|Anna Karenina|Leo Tolstoy|1877
+18|The Grapes of Wrath|John Steinbeck|1939
+19|Slaughterhouse-Five|Kurt Vonnegut|1969
+20|Of Mice and Men|John Steinbeck|1937
+21|The Adventures of Huckleberry Finn|Mark Twain|1884
+22|Les Misérables|Victor Hugo|1862
+23|Don Quixote|Miguel de Cervantes|1615
+24|One Hundred Years of Solitude|Gabriel García Márquez|1967
+25|The Picture of Dorian Gray|Oscar Wilde|1890
+26|The Divine Comedy|Dante Alighieri|1320
+27|Frankenstein|Mary Shelley|1818
+28|Dracula|Bram Stoker|1897
+29|The Hobbit|J.R.R. Tolkien|1937
+30|Fahrenheit 451|Ray Bradbury|1953
+31|The Metamorphosis|Franz Kafka|1915
+32|The Stranger|Albert Camus|1942
+33|The Count of Monte Cristo|Alexandre Dumas|1844
+34|Lolita|Vladimir Nabokov|1955
+35|Catch-22|Joseph Heller|1961
+36|Beloved|Toni Morrison|1987
+37|A Tale of Two Cities|Charles Dickens|1859
+38|Heart of Darkness|Joseph Conrad|1899
+39|The Kite Runner|Khaled Hosseini|2003
+40|Life of Pi|Yann Martel|2001
+41|Invisible Man|Ralph Ellison|1952
+42|The Road|Cormac McCarthy|2006
+43|The Alchemist|Paulo Coelho|1988
+44|A Clockwork Orange|Anthony Burgess|1962
+45|Madame Bovary|Gustave Flaubert|1857
+46|Gone with the Wind|Margaret Mitchell|1936
+47|The Old Man and the Sea|Ernest Hemingway|1952
+49|Middlemarch|George Eliot|1872
+50|The Iliad|Homer|-750
+51|Persuasion|Jane Austen|1817
+52|Rebecca|Daphne du Maurier|1938

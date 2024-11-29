@@ -1,0 +1,350 @@
+using Library.BookManagerApp;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+namespace Library
+{
+    namespace BookManagerApp
+    {
+        public class Book
+        {
+            public int ID { get; set; } // Unique ID
+            public string Title { get; set; }
+            public string Author { get; set; }
+            public int PublicationYear { get; set; }
+
+            public Book(int id, string title, string author, int publicationYear)
+            {
+                ID = id;
+                Title = title;
+                Author = author;
+                PublicationYear = publicationYear;
+            }
+
+            public override string ToString()
+            {
+                return $"ID: {ID}, Title: {Title}, Author: {Author}, Year: {PublicationYear}";
+            }
+        }
+    }
+
+    namespace BookManagerApp
+    {
+        public class BookManager
+        {
+            private const string FilePath = "books.txt";
+            private List<Book> books;
+
+            public BookManager()
+            {
+                books = LoadBooksFromFile();
+            }
+
+            private List<Book> LoadBooksFromFile()
+            {
+                var bookList = new List<Book>();
+                if (File.Exists(FilePath))
+                {
+                    var lines = File.ReadAllLines(FilePath);
+                    foreach (var line in lines)
+                    {
+                        var parts = line.Split('|');
+                        if (parts.Length == 4 &&
+                            int.TryParse(parts[0], out int id) &&
+                            int.TryParse(parts[3], out int publicationYear))
+                        {
+                            bookList.Add(new Book(id, parts[1], parts[2], publicationYear));
+                        }
+                    }
+                }
+                return bookList;
+            }
+
+            private void SaveBooksToFile()
+            {
+                var lines = books.Select(book => $"{book.ID}|{book.Title}|{book.Author}|{book.PublicationYear}");
+                File.WriteAllLines(FilePath, lines);
+            }
+
+            private int GenerateUniqueID()
+            {
+                return books.Count > 0 ? books.Max(b => b.ID) + 1 : 1;
+            }
+
+            public void AddBook(Book book)
+            {
+                books.Add(book);
+                SaveBooksToFile();
+            }
+            public void RemoveBookByID(int id)
+            {
+                var bookToRemove = books.FirstOrDefault(b => b.ID == id);
+                if (bookToRemove != null)
+                {
+                    books.Remove(bookToRemove);
+                    SaveBooksToFile();
+                    Console.WriteLine($"Book with ID {id} has been removed.");
+                }
+                else
+                {
+                    Console.WriteLine($"Book with ID {id} not found.");
+                }
+            }
+
+            public List<Book> GetAllBooks()
+            {
+                return new List<Book>(books);
+            }
+
+            public Book SearchBookByTitle(string title)
+            {
+                return books.FirstOrDefault(b => b.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
+            }
+
+            public Book CreateBook(string title, string author, int publicationYear)
+            {
+                int id = GenerateUniqueID();
+                return new Book(id, title, author, publicationYear);
+            }
+        }
+    }
+
+    namespace BookManagerApp
+    {
+        public class User
+        {
+            public string Name { get; private set; }
+            private List<Book> cart;
+            private const string CartFilePath = "cart.txt";
+
+            public User(string name)
+            {
+                Name = name;
+                cart = LoadCartFromFile();
+            }
+
+            public void AddToCart(Book book)
+            {
+                if (book != null)
+                {
+                    cart.Add(book);
+                    Console.WriteLine($"Book \"{book.Title}\" added to your cart.");
+                    SaveCartToFile();
+                }
+                else
+                {
+                    Console.WriteLine("Invalid book. Cannot add to cart.");
+                }
+            }
+
+            public void ViewCart()
+            {
+                if (cart.Count == 0)
+                {
+                    Console.WriteLine("Your cart is empty.");
+                    return;
+                }
+
+                Console.WriteLine("\n--- Your Cart ---");
+                foreach (var book in cart)
+                {
+                    Console.WriteLine(book);
+                }
+            }
+
+            private List<Book> LoadCartFromFile()
+            {
+                var cartList = new List<Book>();
+                if (File.Exists(CartFilePath))
+                {
+                    var lines = File.ReadAllLines(CartFilePath);
+                    foreach (var line in lines)
+                    {
+                        var parts = line.Split('|');
+                        if (parts.Length == 4 &&
+                            int.TryParse(parts[0], out int id) &&
+                            int.TryParse(parts[3], out int publicationYear))
+                        {
+                            cartList.Add(new Book(id, parts[1], parts[2], publicationYear));
+                        }
+                    }
+                }
+                return cartList;
+            }
+
+            private void SaveCartToFile()
+            {
+                var lines = cart.Select(book => $"{book.ID}|{book.Title}|{book.Author}|{book.PublicationYear}");
+                File.WriteAllLines(CartFilePath, lines);
+            }
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            BookManager bookManager = new BookManager();
+
+            // მომხმარებლის როლის არჩევა (მენეჯერი ან იუზერი)
+            Console.Write("Enter your role (Manager/User): ");
+            string role = Console.ReadLine()?.ToLower();
+
+            User user = null;
+
+            // მომხმარებლის როლის მიხედვით სხვადასხვა ფუნქციები
+            if (role == "manager")
+            {
+                // მენეჯერი
+                Console.WriteLine("Welcome, Manager!");
+            }
+            else if (role == "user")
+            {
+                // მომხმარებელი
+                Console.Write("Enter your name: ");
+                string userName = Console.ReadLine();
+                user = new User(userName);
+                Console.WriteLine($"Welcome, {userName}!");
+            }
+            else
+            {
+                Console.WriteLine("Invalid role. Exiting program.");
+                return;
+            }
+
+            bool running = true;
+
+            while (running)
+            {
+                // მენეჯერისთვის და მომხმარებლისთვის განსხვავებული მენიუები
+                Console.WriteLine("\n--- Book Manager ---");
+
+                if (role == "manager")
+                {
+                    // მენეჯერისთვის მხოლოდ წიგნების დამატება და წაშლა
+                    Console.WriteLine("1. Add a new book");
+                    Console.WriteLine("2. Remove a book by ID");
+                    Console.WriteLine("3. View all books");
+                    Console.WriteLine("4. Exit");
+                }
+                else if (role == "user")
+                {
+                    // მომხმარებლისთვის მხოლოდ წიგნების ძებნა, კალათაში დამატება და კალათის ნახვა
+                    Console.WriteLine("1. View all books");
+                    Console.WriteLine("2. Search for a book by title and add it to your cart");
+                    Console.WriteLine("3. View your cart");
+                    Console.WriteLine("4. Exit");
+                }
+
+                Console.Write("Select an operation: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        if (role == "manager") AddNewBook(bookManager);
+                        else DisplayAllBooks(bookManager);
+                        break;
+                    case "2":
+                        if (role == "manager") RemoveBook(bookManager);
+                        else SearchAndAddBookToCart(bookManager, user);
+                        break;
+                    case "3":
+                        if (role == "manager") DisplayAllBooks(bookManager); // Only for view in manager role
+                        else user.ViewCart();
+                        break;
+                    case "4":
+                        if (role == "manager") { running = false; Console.WriteLine("Goodbye!"); } // No operation
+                        else { running = false; Console.WriteLine("Goodbye!"); }
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        break;
+                }
+            }
+        }
+
+        static void AddNewBook(BookManager bookManager)
+        {
+            Console.Write("Enter the title of the book: ");
+            string title = Console.ReadLine();
+            Console.Write("Enter the author of the book: ");
+            string author = Console.ReadLine();
+            int publicationYear = GetValidPublicationYear();
+
+            Book newBook = bookManager.CreateBook(title, author, publicationYear);
+            bookManager.AddBook(newBook);
+            Console.WriteLine("Book added successfully!");
+        }
+
+        static void DisplayAllBooks(BookManager bookManager)
+        {
+            var books = bookManager.GetAllBooks();
+            if (books.Count == 0)
+            {
+                Console.WriteLine("No books available.");
+                return;
+            }
+
+            Console.WriteLine("\n--- All Books ---");
+            foreach (var book in books)
+            {
+                Console.WriteLine(book);
+            }
+        }
+
+        static void SearchAndAddBookToCart(BookManager bookManager, User user)
+        {
+            Console.Write("Enter the title of the book to search: ");
+            string title = Console.ReadLine();
+            Book book = bookManager.SearchBookByTitle(title);
+
+            if (book != null)
+            {
+                Console.WriteLine("Book found: " + book);
+                Console.Write("Would you like to add this book to your cart? (yes/no): ");
+                string answer = Console.ReadLine()?.ToLower();
+                if (answer == "yes")
+                {
+                    user.AddToCart(book);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Book not found.");
+            }
+        }
+
+        static void RemoveBook(BookManager bookManager)
+        {
+            Console.Write("Enter the ID of the book to remove: ");
+            if (int.TryParse(Console.ReadLine(), out int id))
+            {
+                bookManager.RemoveBookByID(id);
+            }
+            else
+            {
+                Console.WriteLine("Invalid ID. Please enter a valid number.");
+            }
+        }
+
+        static int GetValidPublicationYear()
+        {
+            int publicationYear;
+            while (true)
+            {
+                Console.Write("Enter the publication year: ");
+                if (int.TryParse(Console.ReadLine(), out publicationYear) && publicationYear > 0)
+                {
+                    return publicationYear;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid year. Please enter a valid positive year.");
+                }
+            }
+        }
+    }
+
+}
